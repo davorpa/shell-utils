@@ -1,0 +1,7 @@
+theme: jekyll-theme-hacker
+plugins:
+  - jemoji
+  - jekyll-sitemap
+  - jekyll-seo-tag
+  - jekyll-gist
+  - jekyll-feed
