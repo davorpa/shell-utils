@@ -26,6 +26,11 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# set PATH so it includes my shared shell-utils if it exists
+if [ -d "$HOME/Documents/repo/shell-utils/scripts" ] ; then
+    PATH="$PATH:$HOME/Documents/repo/shell-utils/scripts"
+fi
+
 ## NVM. A Node/NPM Version Manager to decoupled manage multiple active node.js versions
 if [ -d "$HOME/.nvm" ] ; then
     export NVM_DIR="$HOME/.nvm"
