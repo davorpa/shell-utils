@@ -25,3 +25,16 @@ fi
 if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
+
+## NVM. A Node/NPM Version Manager to decoupled manage multiple active node.js versions
+if [ -d "$HOME/.nvm" ] ; then
+    export NVM_DIR="$HOME/.nvm"
+    if [ -s "$NVM_DIR/nvm.sh" ] ; then
+        # This loads nvm
+        . "$NVM_DIR/nvm.sh"
+    fi
+    if [ -s "$NVM_DIR/bash_completion" ] ; then
+        # This loads nvm bash_completion
+        . "$NVM_DIR/bash_completion"
+    fi
+fi
