@@ -10,6 +10,8 @@ At this project you find shell scripts written in next languages:
 
 ### Bash
 
+- [Color table 256](scripts/color-table-256.sh) (`color-table-256.sh`): A script to show a matrix with available colors in terminal in both modes: foreground / background.
+
 ### Perl
 
 ## How to use scripts
