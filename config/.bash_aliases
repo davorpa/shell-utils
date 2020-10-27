@@ -7,3 +7,6 @@
 # https://stackoverflow.com/questions/369758/how-to-trim-whitespace-from-bash-variable#comment21953456_3232433
 #
 alias trim="sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*\$//g'";
+
+# Clear terminal screen (Windows backwards)
+alias cls='clear';
