@@ -21,6 +21,9 @@
 #   for more details.
 #
 
+#
+# Build matrix
+#
 for fgbg in 38 48 ; do # Foreground / Background switch
     for color in {0..255} ; do # 256 Colors
         # Display the color
@@ -32,6 +35,24 @@ for fgbg in 38 48 ; do # Foreground / Background switch
     done
     echo "";              # New line
 done
+
+#
+# Show examples with colored sintaxis
+#
+echo -en "-> USAGE FOREGROUND: \e[38;5;42mecho -e \"\e[38;5;202m";
+    echo -n "\e[38;5;"; echo -en "\e[0m\e[38;5;82m82"; echo -en "\e[0m\e[38;5;202mm";
+        echo -en "\e[38;5;205m"; echo -en "\e[38;5;202m";
+        echo -en "\e[0m\e[38;5;82m YOUR TEXT COLORED IN 82 \e[0m\e[38;5;202m";
+    echo -n "\e[0m";
+echo -e "\e[38;5;42m\"\e[0m";
+echo "";
+echo -en "-> USAGE BACKGROUND: \e[38;5;42mecho -e \"\e[38;5;202m";
+    echo -n "\e[48;5;"; echo -en "\e[0m\e[48;5;33m33"; echo -en "\e[0m\e[38;5;202mm";
+        echo -en "\e[38;5;205m"; echo -en "\e[38;5;202m";
+        echo -en "\e[0m\e[48;5;33m YOUR TEXT COLORED IN 33 \e[0m\e[38;5;202m";
+    echo -n "\e[0m";
+echo -e "\e[38;5;42m\"\e[0m";
+echo "";
 
 # SIGNAL SUCCESS :)
 exit 0;
