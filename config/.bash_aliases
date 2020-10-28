@@ -10,3 +10,15 @@ alias trim="sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*\$//g'";
 
 # Clear terminal screen (Windows backwards)
 alias cls='clear';
+
+
+
+# ====================================
+# ls aliases
+#
+
+alias ll='ls -alF';
+
+alias la='ls -A';
+
+alias l='ls -CF';
