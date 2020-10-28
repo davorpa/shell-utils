@@ -52,3 +52,21 @@ function __ps_aux_top() {
 alias sys-top-ps-rss='__ps_aux_top -rss "$@"';
 alias sys-top-ps-mem='__ps_aux_top -pmem "$@"';
 alias sys-top-ps-cpu='__ps_aux_top -pcpu "$@"';
+
+function sys-refresh-scripts() {
+    # array of paths
+    local FILES=(
+        "$HOME/bin/*.sh"
+        "$HOME/bin/*.pl"
+        "$HOME/Documents/repo/shell-utils/scripts/*.sh"
+        "$HOME/Documents/repo/shell-utils/scripts/*.pl"
+    );
+    # iterate expanding array to string
+    for f in "${FILES[@]}" ; do
+        # grant execute privileges to script owner
+        chmod -v u+x "$f";
+    done
+
+    # Refresh sources to catch new scripts/commands
+    source "$HOME/.profile";
+}
