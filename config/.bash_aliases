@@ -38,3 +38,17 @@ alias sys-autoremove='sudo apt autoremove';
 alias sys-update='sudo apt update';
 
 alias sys-upgrade='sudo apt upgrade';
+
+function __ps_aux_top() {
+    local SORTCOL=${1:-};   # $1 Required.
+    local LINES=${2:-10};   # $2 Optional. Default 10
+    { {                                          # https://unix.stackexchange.com/a/70675
+        ps aux --width 180 --sort="$SORTCOL";    # execute "ps" command
+        echo $? >&3                              # redirect it EXITCODE to file descriptor 3
+      } | head --lines="${LINES}" >&4;           # do top filter and redirect EXITCODE to file descriptor 4
+    } 3>&1;                                      # return output of file descriptor 3
+    return $?;
+}
+alias sys-top-ps-rss='__ps_aux_top -rss "$@"';
+alias sys-top-ps-mem='__ps_aux_top -pmem "$@"';
+alias sys-top-ps-cpu='__ps_aux_top -pcpu "$@"';
