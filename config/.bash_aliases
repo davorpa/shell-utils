@@ -31,3 +31,10 @@ alias l='ls -CF';
 
 # cpuinfo
 alias sys-cpuinfo='cat /proc/cpuinfo';
+
+# APT
+alias sys-autoremove='sudo apt autoremove';
+
+alias sys-update='sudo apt update';
+
+alias sys-upgrade='sudo apt upgrade';
