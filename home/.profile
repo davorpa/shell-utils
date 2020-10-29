@@ -48,3 +48,41 @@ if [ -d "$HOME/.nvm" ] ; then
         . "$NVM_DIR/bash_completion";
     fi
 fi
+
+## RENV. A Ruby On Rails Version Manager to decoupled manage multiple active ruby versions
+## https://github.com/rbenv/rbenv
+## Install first with:
+##  curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-installer | bash
+##
+if [ -d "$HOME/.rbenv" ] ; then
+    export RBENV_DIR="$HOME/.rbenv";
+    if [ -s "$RBENV_DIR/bin/rbenv" ] ; then
+        # renv-install-doctor reports:
+
+        #1. $RBENV_DIR/bin/rbenv must be in PATH
+        PATH="$RBENV_DIR/bin:$PATH";
+
+        # 2. run "rbenv init" to complete installation
+
+        # 2.1. $RBENV_DIR/shims must exists.
+        mkdir -p "${RBENV_DIR}/"{shims,versions};
+
+        # 2.2 Installs autocompletion. This is entirely optional but pretty useful.
+        # Sourcing ~/.rbenv/completions/rbenv.bash will set that up.
+        # There is also a ~/.rbenv/completions/rbenv.zsh for Zsh users
+        if [ -n "$ZSH_VERSION" ]; then
+            #  assume Zsh
+            if [ -r "$RBENV_DIR/completions/rbenv.zsh" ] ; then
+                source "$RBENV_DIR/completions/rbenv.zsh";
+            fi
+        elif [ -n "$BASH_VERSION" ]; then
+            # assume Bash
+            if [ -r "$RBENV_DIR/completions/rbenv.bash" ] ; then
+                source "$RBENV_DIR/completions/rbenv.bash";
+            fi
+        fi
+
+        # Load rbenv automatically by appending the following to ~/.bashrc:
+        eval "$(rbenv init -)"
+    fi
+fi
