@@ -24,6 +24,9 @@ plugins:
   - jekyll-gist
   - jekyll-feed
   - jekyll-github-metadata
+  - jekyll-redirect-from
+whitelist:
+  - jekyll-redirect-from
 
 gist:
   # Disabling noscript support. Default: true
