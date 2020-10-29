@@ -31,6 +31,8 @@ alias l='ls -CF';
 
 # cpuinfo
 alias sys-cpuinfo='cat /proc/cpuinfo';
+# meminfo
+alias sys-meminfo='cat /proc/meminfo';
 
 # swap memory size
 alias sys-swap-total='grep SwapTotal /proc/meminfo';
