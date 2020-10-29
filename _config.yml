@@ -1,8 +1,29 @@
+#
+# Global site config
+#
+
+# [site encoding]
 encoding: utf-8
+# [Name of visual theme]
 theme: jekyll-theme-hacker
+# [The title of your site]
+#title:
+# [A short description of your site's purpose]
+#description:
+# ["true" or "false" to indicate whether to provide a download URL]
+show_downloads: false
+# [Your Google Analytics tracking ID]
+#google_analytics:
+# [Number of posts in one paginated section (default: 3)]
+paginate: 5
+# Declare rubygem used plugins
 plugins:
   - jemoji
   - jekyll-sitemap
   - jekyll-seo-tag
   - jekyll-gist
   - jekyll-feed
+gist:
+  # Disabling noscript support. Default: true
+  # By default, Jekyll Gist will make an HTTP call per Gist to retrieve the raw content of the Gist. This information is used to propagate noscript tags for search engines and browsers without JavaScript support. If you'd like to disable this feature, for example, to speed up builds locally, add the following to your site's _config.yml:
+  noscript: true
