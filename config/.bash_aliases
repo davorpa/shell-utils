@@ -32,6 +32,11 @@ alias l='ls -CF';
 # cpuinfo
 alias sys-cpuinfo='cat /proc/cpuinfo';
 
+# swap memory size
+alias sys-swap-total='grep SwapTotal /proc/meminfo';
+alias sys-swap-cached='grep SwapCached /proc/meminfo';
+alias sys-swap-free='grep SwapFree /proc/meminfo';
+
 # APT
 alias sys-autoremove='sudo apt autoremove';
 
