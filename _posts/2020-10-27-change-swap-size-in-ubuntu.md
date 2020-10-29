@@ -9,9 +9,7 @@ excerpt_separator: <!--more-->
 ---
 ---
 
-# Change swap size in Ubuntu 18.04 or newer
-
-![Gparted Linux Swap Partitioning](/assets/linux-gparted-swap.jpg)
+![Gparted Linux Swap Partitioning]({{'/assets/posts/linux-gparted-swap.jpg' | relative_url}})
 
 Swap is a special area on your computer, which **the operating system can use as additional RAM**.
 
