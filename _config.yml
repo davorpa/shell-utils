@@ -7,9 +7,11 @@ encoding: utf-8
 # [Name of visual theme]
 theme: jekyll-theme-hacker
 # [The title of your site]
-#title:
+title: My Shell Utils
 # [A short description of your site's purpose]
-#description:
+description: Because scripts are the powerful tool for automating things 🧰😉
+# [author of posts]
+author: davorpa
 # ["true" or "false" to indicate whether to provide a download URL]
 show_downloads: false
 # [Your Google Analytics tracking ID]
