@@ -6,13 +6,23 @@ Please note we have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in
 
 Also, read an focus on next extra sections.
 
-Thanks you a lot for your understanding.
+**Thanks you a lot 🙏 for your understanding.**
 
 
-## Issues Process
+## CI/CD Productivity tools
 
+🚧
+
+
+## Issues
+
+🚧
 
 
 ## Pull Request Process
 
-
+1. Fork it.
+2. Create your feature branch (`git checkout -b my-new-feature`).
+3. Commit your changes (`git commit -am 'Add some feature'`).
+4. Push to the branch (`git push origin my-new-feature`).
+5. Create new Pull Request.
