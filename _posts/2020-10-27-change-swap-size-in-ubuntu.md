@@ -5,6 +5,7 @@ category: code
 tags: [linux, ubuntu, shell, bash, swap, memory]
 title: Change swap size in Ubuntu 18.04 or newer
 #lang: en-US
+excerpt_separator: <!--more-->
 ---
 ---
 
@@ -17,7 +18,7 @@ Swap is a special area on your computer, which **the operating system can use as
 Starting with Ubuntu 17.04, _the swap partition was replaced by a swap file_. The main advantage of the swap file is easy resizing.
 
 In the following example, we’ll extend the swap space available in the `/swapfile` from `2 GB` to `8 GB`.
-
+<!--more-->
 Why? Recently I bought a laptop without any operative system installed and I definitely wanted to start moving to Linux, triying with the Ubuntu distro. By default, the installation allocated me a 2GB file and after an intensive use I realize that sometimes it freezes, especially if Chrome browser does some bull shits 😆. Then, I need enter on TTY and kill some processes before computer dead completelly and desn't respond.
 
 Normally **it's recomended** that swap file has the same size that physical memory size. If you have 8 GB of RAM, then 8 GB of swap. At least, in Windows is something like that.
