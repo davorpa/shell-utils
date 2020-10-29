@@ -73,12 +73,12 @@ if [ -d "$HOME/.rbenv" ] ; then
         if [ -n "$ZSH_VERSION" ]; then
             #  assume Zsh
             if [ -r "$RBENV_DIR/completions/rbenv.zsh" ] ; then
-                source "$RBENV_DIR/completions/rbenv.zsh";
+                . "$RBENV_DIR/completions/rbenv.zsh";
             fi
         elif [ -n "$BASH_VERSION" ]; then
             # assume Bash
             if [ -r "$RBENV_DIR/completions/rbenv.bash" ] ; then
-                source "$RBENV_DIR/completions/rbenv.bash";
+                . "$RBENV_DIR/completions/rbenv.bash";
             fi
         fi
 
