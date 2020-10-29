@@ -34,10 +34,15 @@ alias sys-cpuinfo='cat /proc/cpuinfo';
 # meminfo
 alias sys-meminfo='cat /proc/meminfo';
 
-# swap memory size
+# Swap memory size
 alias sys-swap-total='grep SwapTotal /proc/meminfo';
 alias sys-swap-cached='grep SwapCached /proc/meminfo';
 alias sys-swap-free='grep SwapFree /proc/meminfo';
+
+# Physical memory size
+alias sys-mem-total='grep MemTotal /proc/meminfo';
+alias sys-mem-available='grep MemAvailable /proc/meminfo';
+alias sys-mem-free='grep MemFree /proc/meminfo';
 
 # APT
 alias sys-autoremove='sudo apt autoremove';
