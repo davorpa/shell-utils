@@ -1,7 +1,7 @@
 ---
 layout: post
 comments: true
-category: code
+category: posts
 tags: [linux, ubuntu, shell, bash, swap, memory]
 title: Change swap size in Ubuntu 18.04 or newer
 #lang: en-US
