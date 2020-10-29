@@ -13,7 +13,7 @@ theme: jekyll-theme-hacker
 # ["true" or "false" to indicate whether to provide a download URL]
 show_downloads: false
 # [Your Google Analytics tracking ID]
-#google_analytics:
+google_analytics: G-16B3VRNXK7
 # [Number of posts in one paginated section (default: 3)]
 paginate: 5
 # Declare rubygem used plugins
