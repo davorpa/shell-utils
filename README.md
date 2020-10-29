@@ -19,7 +19,10 @@ At this project you find shell scripts written in next languages:
 For **security reasons** after download desired script
 
 ```bash
+# using wget
 wget -O ~/bin/[foo-script] https://davorpa.github.io/shell-utils/scripts/[foo-script]
+# using curl
+curl -o ~/bin/[foo-script] https://davorpa.github.io/shell-utils/scripts/[foo-script]
 ```
 
 you should take a view inside on it code and if, after inspecting it, you are agree with coding and like it, remember to make this shell script executable by the user/owner:
