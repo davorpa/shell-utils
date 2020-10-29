@@ -35,6 +35,8 @@ alias sys-cpuinfo='cat /proc/cpuinfo';
 alias sys-meminfo='cat /proc/meminfo';
 # swaps
 alias sys-swaps='cat /proc/swaps';#'swapon -s';
+## fstab
+alias sys-fstab='cat /etc/fstab';
 
 # Swap memory size
 alias sys-swap-total='grep SwapTotal /proc/meminfo';
