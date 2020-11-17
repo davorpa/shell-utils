@@ -12,6 +12,8 @@ At this project you find shell scripts written in next languages:
 
 - [Color table 256](scripts/color-table-256.sh) (`color-table-256.sh`): A script to show a matrix with available colors in terminal in both modes: foreground / background.
 
+- [Zoom installer](scripts/zoom-setup.sh) (`zoom-setup.sh`): A script to install / update your [Zoom client](https://zoom.us/) easy. The script register bundle certificates, download binaries and install/update it for you. It's recomended close the client before execute this script.
+
 ### Perl
 
 ## How to use scripts
