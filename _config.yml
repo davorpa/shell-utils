@@ -30,6 +30,13 @@ plugins:
 whitelist:
   - jekyll-redirect-from
 
+# Exclude some files from site deployment
+exclude:
+  - "CODE_OF_CONDUCT.md"
+  - "CONTRIBUTING.md"
+  - "LICENSE"
+  - "**.xcf"
+
 gist:
   # Disabling noscript support. Default: true
   # By default, Jekyll Gist will make an HTTP call per Gist to retrieve the raw content of the Gist. This information is used to propagate noscript tags for search engines and browsers without JavaScript support. If you'd like to disable this feature, for example, to speed up builds locally, add the following to your site's _config.yml:
