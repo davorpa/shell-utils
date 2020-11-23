@@ -92,3 +92,21 @@ function sys-refresh-scripts() {
     # Refresh sources to catch new scripts/commands
     source "$HOME/.profile";
 }
+
+
+
+# ====================================
+# GIT aliases
+#
+alias git-init='git init --initial-branch=main';
+
+# git pretty log
+alias gl='git log --oneline --graph --decorate --color';
+alias gla='git log --oneline --graph --decorate --color --all';
+# Adds author and relative commit date
+alias glg='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset" --abbrev-commit --date=relative';
+alias glga='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset" --abbrev-commit --date=relative --all';
+
+# git fetch
+alias gf='git fetch --prune';
+alias gfa='gf --all';
