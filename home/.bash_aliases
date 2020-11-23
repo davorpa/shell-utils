@@ -34,7 +34,7 @@ alias sys-cpuinfo='cat /proc/cpuinfo';
 # meminfo
 alias sys-meminfo='cat /proc/meminfo';
 # swaps
-alias sys-swaps='cat /proc/swaps';#'swapon -s';
+alias sys-swaps='cat /proc/swaps';        #'swapon -s';
 ## fstab
 alias sys-fstab='cat /etc/fstab';
 
@@ -47,6 +47,12 @@ alias sys-swap-free='grep SwapFree /proc/meminfo';
 alias sys-mem-total='grep MemTotal /proc/meminfo';
 alias sys-mem-available='grep MemAvailable /proc/meminfo';
 alias sys-mem-free='grep MemFree /proc/meminfo';
+
+# DNS
+alias sys-dnsforce-google8='echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null';
+alias sys-dnsforce-google4='echo "nameserver 8.8.4.4" | sudo tee /etc/resolv.conf > /dev/null';
+alias sys-dnsforce-cloudflare='echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf > /dev/null';
+alias sys-dnsforce-cloudflare1='echo "nameserver 1.0.0.1" | sudo tee /etc/resolv.conf > /dev/null';
 
 # APT
 alias sys-autoremove='sudo apt autoremove';
