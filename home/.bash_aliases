@@ -26,7 +26,7 @@ alias l='ls -CF';
 
 
 # ====================================
-# System alias
+# SYSTEM alias
 #
 
 # cpuinfo
@@ -35,7 +35,7 @@ alias sys-cpuinfo='cat /proc/cpuinfo';
 alias sys-meminfo='cat /proc/meminfo';
 # swaps
 alias sys-swaps='cat /proc/swaps';        #'swapon -s';
-## fstab
+# fstab
 alias sys-fstab='cat /etc/fstab';
 
 # Swap memory size
@@ -100,6 +100,9 @@ function sys-refresh-scripts() {
 #
 alias git-init='git init --initial-branch=main';
 
+# git branch
+alias gbra='git branch --all';
+
 # git pretty log
 alias gl='git log --oneline --graph --decorate --color';
 alias gla='git log --oneline --graph --decorate --color --all';
@@ -110,3 +113,8 @@ alias glga='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset
 # git fetch
 alias gf='git fetch --prune';
 alias gfa='gf --all';
+
+# git push
+alias gpf='git push --force';
+alias gpfo='git push --force origin';
+alias gpfu='git push --force upstream';
