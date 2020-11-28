@@ -4,6 +4,11 @@
 
 My useful utilities and commands about shell scripting.
 
+<div align="center">
+<a href="https://www.buymeacoffee.com/davorpatech"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=davorpatech&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff"></a>
+</div>
+
+
 ## Scripting Languages
 
 At this project you find shell scripts written in next languages:
@@ -33,7 +38,7 @@ you should take a view inside on it code and if, after inspecting it, you are ag
 chmod u+x ~/bin/[foo-script]
 ```
 
-and support me starring and share this project.
+and support me starring, [![Buy Me a Coffee! @davorpatech](https://img.shields.io/badge/Buy%20me%20a%20coffee!-%40davorpatech-yellow)](https://www.buymeacoffee.com/davorpatech) and share this project.
 
 Thanks a lot 🙏.
 
