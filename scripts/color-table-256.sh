@@ -22,18 +22,15 @@
 #
 
 
-# check if we know we "want" color
+# Warn if know we don't support colors
 case "$TERM" in
     xterm-color|*-256color)
         # colored support
         ;;
     *)
         # Output to error stream
-        echo >&2 -en "\e[31mFATAL:\e[0m I require colored terminal support but seems: $TERM
-
-Aborting.
-";
-        exit 127;    # SIGNAL with error code
+        echo >&2 -en "\e[31mWARN:\e[0m A colored terminal support is required but seems: $TERM";
+        ;;
 esac
 
 #
