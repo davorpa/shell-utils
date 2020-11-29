@@ -56,21 +56,100 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+##################################################
+# Fancy PWD display function
+##################################################
+# The home directory (HOME) is replaced with a ~
+# The last pwdmaxlen characters of the PWD are displayed
+# Leading partial directory names are striped off
+# /home/me/stuff          -> ~/stuff               if USER=me
+# /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
+##################################################
+__bash_prompt_command() {
+    # How many characters of the $PWD should be kept
+    local pwdmaxlen=30;
+    # Indicate that there has been dir truncation
+    local trunc_symbol="...";
+    local dir=${PWD##*/};           # Basename of current working directory.
+    local dir_len=${#dir};          # It string length.
+    pwdmaxlen=$(( ( pwdmaxlen < dir_len ) ? dir_len : pwdmaxlen ));
+    # A global variable
+    PWD_PROMPT=${PWD/#$HOME/\~};    # Reduce HOME PATH matching to their UNIX symbol.
+    local pwdcurlen=${#PWD_PROMPT}; # It string length.
+    local pwdoffset=$(( pwdcurlen - pwdmaxlen ));
+    if [ ${pwdoffset} -gt "0" ]
+    then
+        PWD_PROMPT=${PWD_PROMPT:$pwdoffset:$pwdmaxlen}; # Expansion to max from pos
+        PWD_PROMPT=${trunc_symbol}/${PWD_PROMPT#*/};    # Prepend truncation without duplicates
+    fi
+}
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
+__bash_configure_prompt() {
+    local NONE="\[\033[0m\]";    # unsets color to term's fg color
+    # regular colors
+    local K="\[\033[0;30m\]";    # black
+    local R="\[\033[0;31m\]";    # red
+    local G="\[\033[0;32m\]";    # green
+    local Y="\[\033[0;33m\]";    # yellow
+    local B="\[\033[0;34m\]";    # blue
+    local M="\[\033[0;35m\]";    # magenta
+    local C="\[\033[0;36m\]";    # cyan
+    local W="\[\033[0;37m\]";    # white
+    # emphasized (bolded) colors
+    local EMK="\[\033[1;30m\]";
+    local EMR="\[\033[1;31m\]";
+    local EMG="\[\033[1;32m\]";
+    local EMY="\[\033[1;33m\]";
+    local EMB="\[\033[1;34m\]";
+    local EMM="\[\033[1;35m\]";
+    local EMC="\[\033[1;36m\]";
+    local EMW="\[\033[1;37m\]";
+    # background colors
+    local BGK="\[\033[40m\]";
+    local BGR="\[\033[41m\]";
+    local BGG="\[\033[42m\]";
+    local BGY="\[\033[43m\]";
+    local BGB="\[\033[44m\]";
+    local BGM="\[\033[45m\]";
+    local BGC="\[\033[46m\]";
+    local BGW="\[\033[47m\]";
+
+    # If this is an xterm set the title to user@host:dir
+    case $TERM in
+        xterm*|rxvt*)
+#            local TITLEBAR='\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]';
+#            local TITLEBAR='\[\e]0;\u:${PWD_PROMPT:+($PWD_PROMPT)}\a\]';
+            local TITLEBAR='\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h:${PWD_PROMPT:+($PWD_PROMPT)}\a\]';
+            ;;
+        *)
+            local TITLEBAR="";
+            ;;
+    esac
+
+    local UC=$EMG;                  # user's color
+    [ $UID -eq "0" ] && UC=$EMR;    # root's color
+
+#    if [ "$color_prompt" = yes ]; then
+#        PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ';
+#    else
+#        PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ ';
+#    fi
+
+    # extra backslash in front of \$ to make bash colorize the prompt
+    if [ "$color_prompt" = yes ]; then
+        PS1="${debian_chroot:+($debian_chroot)}${EMY}[${UC}\u${EMK}@${UC}\h${EMY}:${EMB}\${PWD_PROMPT}${EMY}]${UC}\\$ ${NONE}\r\n${EMY} 👉${NONE} ";
+    else
+        PS1="${debian_chroot:+($debian_chroot)}[\u@\h:\${PWD_PROMPT}]\\$\r\n 👉 ";
+    fi
+
+    # prepend titlebar
+    PS1="$TITLEBAR$PS1";
+}
+
+PROMPT_COMMAND=__bash_prompt_command;
+__bash_configure_prompt;
+unset __bash_configure_prompt;
+unset color_prompt force_color_prompt;
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
