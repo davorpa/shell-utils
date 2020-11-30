@@ -90,6 +90,7 @@ function sys-refresh-scripts() {
     done
 
     # Refresh sources to catch new scripts/commands
+    # shellcheck source=.profile disable=SC1091
     source "$HOME/.profile";
 }
 
@@ -100,21 +101,45 @@ function sys-refresh-scripts() {
 #
 alias git-init='git init --initial-branch=main';
 
-# git branch
-alias gbra='git branch --all';
+# git status
+alias gstat="git status";
 
 # git pretty log
 alias gl='git log --oneline --graph --decorate --color';
-alias gla='git log --oneline --graph --decorate --color --all';
+alias gla='gl --all';
 # Adds author and relative commit date
 alias glg='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset" --abbrev-commit --date=relative';
-alias glga='git log --graph --pretty=format:"%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %Cblue<%an>%Creset" --abbrev-commit --date=relative --all';
+alias glga='glg --all';
+
+# git branch
+alias gbh='git branch';
+alias gbha='gbh --all';                 # List all local+remotes
+alias gbhd='gbh --delete';              # Delete local
+
+# git checkout
+alias gco='git checkout';               # Checkout
+alias gcom='gco main || gco master';    #... local main
 
 # git fetch
-alias gf='git fetch --prune';
-alias gfa='gf --all';
+alias gf='git fetch --prune';           # Sync remotes
+alias gfa='gf --all';                   # Sync all remotes
 
 # git push
-alias gpf='git push --force';
-alias gpfo='git push --force origin';
-alias gpfu='git push --force upstream';
+alias gph='git push';
+alias gpo='gph origin';                 # ...over remote: origin
+alias gpu='gph upstream';               # ...over remote: upstream
+alias gpf='gph --force';                # Force push
+alias gpfo='gpf origin';                # ...over remote: origin
+alias gpfu='gpf upstream';              # ...over remote: upstream
+
+# git commit
+alias gcm='git commit'                  # Commit
+alias gcma='gcm --amend';               # Amend
+
+# git rebase
+alias grbi='git rebase -i';             # Rebase interactive
+# shellcheck disable=SC2142
+alias grbi-h='grbi HEAD~"$1"';          # ...by HEAD n-position
+alias grb-c='git rebase --continue';    # Continue rebase
+alias grb-a='git rebase --abort';       # Abort rebase
+alias grb-m='git commit --amend "-S"';  # Rename rebase message
