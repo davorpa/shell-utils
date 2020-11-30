@@ -64,9 +64,10 @@ alias sys-upgrade='sudo apt upgrade';
 function __ps_aux_top() {
     local SORTCOL=${1:-};       # $1 Required.
     local LINES=${2:-10};       # $2 Optional. Default 10
+    local COLS=${COLUMNS:-180}; # Terminal computed columns or 180
     ( ( ( ( (                                         # https://unix.stackexchange.com/a/70675
             exec 3>&- 4>&-;                           # close used file descriptors
-            ps aux --width 180 --sort="$SORTCOL"; # execute "ps" command
+            ps aux --width "$COLS" --sort="$SORTCOL"; # execute "ps" command
         );
         echo $? >&3                                   # redirect it EXITCODE to file descriptor 3
       ) | head --lines="${LINES}" >&4;                # do top filter and redirect to file descriptor 4
