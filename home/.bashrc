@@ -56,6 +56,7 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+
 ##################################################
 # Fancy PWD display function
 ##################################################
@@ -67,7 +68,7 @@ fi
 ##################################################
 __bash_prompt_command() {
     # How many characters of the $PWD should be kept
-    local pwdmaxlen=30;
+    local pwdmaxlen=40;
     # Indicate that there has been dir truncation
     local trunc_symbol="...";
     local dir=${PWD##*/};           # Basename of current working directory.
@@ -84,7 +85,21 @@ __bash_prompt_command() {
     fi
 }
 
-__bash_configure_prompt() {
+__bash_prompt_status_command() {
+    local    EXIT="${?##0}";             # This needs to be first
+    local PIPEXIT=${PIPESTATUS[0]};      # Pipes exit
+    local RESET='\[\033[0m\]';
+    local   RED='\[\033[1;31m\]';
+    local GREEN='\[\033[1;32m\]';
+    if [[ $EXIT -eq 0 && $PIPEXIT -eq 0 ]]; then
+        EXITC_ICON="${GREEN}✅";
+    else
+        EXITC_ICON="${RED}$EXIT?❌";
+    fi
+    EXITC_ICON+=${RESET};
+}
+
+__bash_build_prompt() {
     local NONE="\[\033[0m\]";    # unsets color to term's fg color
     # regular colors
     local K="\[\033[0;30m\]";    # black
@@ -129,27 +144,47 @@ __bash_configure_prompt() {
     local UC=$EMG;                  # user's color
     [ $UID -eq "0" ] && UC=$EMR;    # root's color
 
-#    if [ "$color_prompt" = yes ]; then
-#        PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ';
-#    else
-#        PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ ';
-#    fi
+    # If git command found (silent detection)
+    if command -v git &>/dev/null; then
+        # if inside git repo (silent detection)
+        if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+            local git_stat;
+            if [ "$color_prompt" = yes ]; then
+                git_stat=( $(git -c color.ui=always status -sb) );
+            else
+                git_stat=( $(git -c color.ui=never  status -sb) );
+            fi
+            # extract only "branch...remote" part/column
+            git_stat=" ${git_stat[1]}";
+            [ "$color_prompt" = yes ] && git_stat="${EMC}📦${NONE}${git_stat}";
+            [ "$color_prompt" != yes ] && git_stat="📦${git_stat}";
+            git_stat="\n ${git_stat}";
+        fi
+    fi
 
+    # Init with remote
+    PS1='${debian_chroot:+($debian_chroot)}';
     # extra backslash in front of \$ to make bash colorize the prompt
     if [ "$color_prompt" = yes ]; then
-        PS1="${debian_chroot:+($debian_chroot)}${EMY}[${UC}\u${EMK}@${UC}\h${EMY}:${EMB}\${PWD_PROMPT}${EMY}]${UC}\\$ ${NONE}\r\n${EMY} 👉${NONE} ";
+#        PS1+='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ';
+        PS1+="${EMY}[${UC}\u${EMK}@${UC}\h${EMY}:${EMB}\${PWD_PROMPT}${EMY}]${UC}\\$ ${NONE}";
+        PS1+="${git_stat}${NONE}";
+        PS1+="\n ${EXITC_ICON} ${EMY}👉${NONE} ";
     else
-        PS1="${debian_chroot:+($debian_chroot)}[\u@\h:\${PWD_PROMPT}]\\$\r\n 👉 ";
+        PS1+="[\u@\h:\${PWD_PROMPT}]\\$ ${git_stat}\n ${EXITC_ICON} 👉 ";
+#        PS1+='\u@\h:\w\$ ';
     fi
 
     # prepend titlebar
     PS1="$TITLEBAR$PS1";
 }
 
-PROMPT_COMMAND=__bash_prompt_command;
-__bash_configure_prompt;
-unset __bash_configure_prompt;
-unset color_prompt force_color_prompt;
+PROMPT_COMMAND="__bash_prompt_status_command${PROMPT_COMMAND:+; $PROMPT_COMMAND}";
+PROMPT_COMMAND="__bash_prompt_command${PROMPT_COMMAND:+; $PROMPT_COMMAND}";
+PROMPT_COMMAND="__bash_build_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}";
+#unset __bash_build_prompt;
+#unset color_prompt force_color_prompt;
+
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
