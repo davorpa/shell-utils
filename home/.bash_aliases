@@ -12,6 +12,19 @@ alias trim="sed -e 's/^[[:space:]]*//g' -e 's/[[:space:]]*\$//g'";
 alias cls='clear';
 
 
+# ====================================
+# custom aliases
+#
+
+# Search folders 'node_modules' in current directory listing and remove them
+alias nmrm="find . -name 'node_modules' -type d -prune -print -exec rm -rf '{}' \;"
+( command -v npx &>/dev/null; ) && {
+    # interactive using node npkill module
+    alias nmrm="npx npkill";
+    alias nmrm-root="nmrm -f";
+}
+
+
 
 # ====================================
 # ls aliases
