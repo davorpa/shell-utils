@@ -133,8 +133,12 @@ alias gbha='gbh --all';                 # List all local+remotes
 alias gbhd='gbh --delete';              # Delete local
 
 # git checkout
-alias gco='git checkout';               # Checkout
-alias gcom='gco main || gco master';    #... local main
+alias gco='git checkout';                   # Checkout
+alias gcom='gco main || gco master';        #... local main
+alias gsw='git switch';
+alias gbh-create-empty='gsw -f --orphan';   # $1=branchName.
+                                            # Create empty branch with force going back to orphan (--root)
+                                            #https://stackoverflow.com/questions/15034390/how-to-create-a-new-and-empty-root-branch
 
 # git fetch
 alias gf='git fetch --prune';           # Sync remotes
