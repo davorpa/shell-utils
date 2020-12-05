@@ -163,3 +163,17 @@ alias grbi-h='grbi HEAD~"$1"';          # ...by HEAD n-position
 alias grb-c='git rebase --continue';    # Continue rebase
 alias grb-a='git rebase --abort';       # Abort rebase
 alias grb-m='git commit --amend "-S"';  # Rename rebase message
+
+
+
+# ====================================
+# NODE aliases
+#
+
+# https://docs.npmjs.com/cli/v6/commands/npm-install
+alias npmi='npm install';                       # Install package dependencies
+alias npmi-opro='npmi --only=production';       # only non-devDependencies
+alias npmi-odev='npmi --only=development';      # only devDependencies
+alias npmig='npmi -G';                          # install the package globally rather than locally.
+alias npmid='npmi -D';                          # Package will appear in your `devDependencies`.
+alias npmio='npmi -O'                           # Package will appear in your `optionalDependencies`.
