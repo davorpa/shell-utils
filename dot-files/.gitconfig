@@ -1,0 +1,87 @@
+[user]
+    email = davorpatech@gmail.com
+    name = davorpa
+[credential]
+    helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+[commit]
+    gpgsign = true
+[color]
+    ui = auto
+[color "diff-highlight"]
+    oldNormal = red
+    oldHighlight = red "#500000"
+    newNormal = green
+    newHighlight = green "#003000"
+[color "diff"]
+    meta = 11
+    frag = magenta bold
+    commit = yellow bold
+    old = red
+    new = green
+    whitespace = "#ffff00" reverse
+[alias]
+    initbm = init --initial-branch=main
+    st = status
+    ci = commit --verbose
+
+    # Checkout
+    co = checkout
+    com = !git co main || git co master
+    sw = switch
+
+    # Branch
+    br = branch
+    brla = br --all
+    br-d = br --delete
+    br-checkout-orphan = sw -f --orphan
+
+    # Commit
+    cm = commit
+    amend = commit --amend
+    amendS = amend "-S"
+    aa = add --all
+
+    ff = merge --ff-only
+    noff = merge --no-ff
+    fa = fetch --all
+    fp = fetch --prune
+    fpa = fp --all
+
+    # Push
+    psh = push
+    psh-f = psh --force
+    psh-fwl = psh --force-with-lease
+    pshom = !git psh origin main ||  git psh origin master
+    pshum = !git psh upstream main ||  git psh upstream master
+    pshom-f = !git psh-f origin main ||  git psh-f origin master
+    pshum-f = !git psh-f upstream main ||  git psh-f upstream master
+    pshom-fwl = !git psh-fwl origin main ||  git psh-fwl origin master
+    pshum-fwl = !git psh-fwl upstream main ||  git psh-fwl upstream master
+
+    # Diff
+    di = diff --find-copies-harder
+    dc = diff --find-copies-harder --cached
+    ds = diff --stat=160,120
+    dh1 = diff HEAD~1
+
+    # Stash
+    ski = !git stash --keep-index
+
+    # Rebase
+    rb = rebase -i
+    rbH = !git rb HEAD~"$1"
+    rb-c = rb --continue
+    rb-a = rb --abort
+    rb-m = amendS
+
+    # Divergence (commits we added and commits remote added)
+    div = divergence
+
+    # Fancy logging.
+    #   lg = graph of all commits, only current branch
+    #   lga = graph of all commits, all reachable refs
+    lg = log --oneline --graph --decorate --color
+    lga = lg --all
+    lmine = !git log --author=\"$(git config user.name)\"
+    lgmine = lmine --oneline --graph --decorate --color
+    lgamine = lgmine --all
