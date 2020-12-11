@@ -22,7 +22,6 @@
 [alias]
     initbm = init --initial-branch=main
     st = status
-    ci = commit --verbose
 
     # Checkout
     co = checkout
@@ -33,16 +32,25 @@
     br = branch
     brla = br --all
     br-d = br --delete
+    br-mv = br --move
     br-checkout-orphan = sw -f --orphan
+
+    # Staging
+    aa = add --all
+    unstage = restore --staged
+    unaa = unstage .
 
     # Commit
     cm = commit
+    cmv = commit --verbose
     amend = commit --amend
     amendS = amend "-S"
-    aa = add --all
 
+    # Merge
     ff = merge --ff-only
     noff = merge --no-ff
+
+    # Fetch remotes
     fa = fetch --all
     fp = fetch --prune
     fpa = fp --all
@@ -62,14 +70,16 @@
     di = diff --find-copies-harder
     dc = diff --find-copies-harder --cached
     ds = diff --stat=160,120
-    dh1 = diff HEAD~1
+    dH0 = diff HEAD
+    dH1 = diff HEAD~1
 
     # Stash
-    ski = !git stash --keep-index
+    sth-ki = stash --keep-index
 
     # Rebase
     rb = rebase -i
-    rbH = !git rb HEAD~"$1"
+    rbH = !git rb HEAD~$1
+    rbR = rb --root
     rb-c = rb --continue
     rb-a = rb --abort
     rb-m = amendS
