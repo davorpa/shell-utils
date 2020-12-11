@@ -8,6 +8,12 @@ case $- in
       *) return;;
 esac
 
+# Add some own libraries and their dependencies
+source ~/.colors.bash;
+source ~/.git-completion.bash;
+source ~/.git-prompt.sh;
+source ~/.bash_prompt.sh;
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -56,134 +62,20 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+## preconfigure GIT prompt before build PS1
+if [ -n "$color_prompt" ]; then
+    GIT_PS1_SHOWCOLORHINTS=true;
+fi
+GIT_PS1_SHOWDIRTYSTATE=true;
+GIT_PS1_SHOWUNTRACKEDFILES=true;
+GIT_PS1_SHOWSTASHSTATE=true;
+GIT_PS1_SHOWUPSTREAM="auto verbose";
 
-##################################################
-# Fancy PWD display function
-##################################################
-# The home directory (HOME) is replaced with a ~
-# The last pwdmaxlen characters of the PWD are displayed
-# Leading partial directory names are striped off
-# /home/me/stuff          -> ~/stuff               if USER=me
-# /usr/share/big_dir_name -> ../share/big_dir_name if pwdmaxlen=20
-##################################################
-__bash_prompt_command() {
-    # How many characters of the $PWD should be kept
-    local pwdmaxlen=40;
-    # Indicate that there has been dir truncation
-    local trunc_symbol="...";
-    local dir=${PWD##*/};           # Basename of current working directory.
-    local dir_len=${#dir};          # It string length.
-    pwdmaxlen=$(( ( pwdmaxlen < dir_len ) ? dir_len : pwdmaxlen ));
-    # A global variable
-    PWD_PROMPT=${PWD/#$HOME/\~};    # Reduce HOME PATH matching to their UNIX symbol.
-    local pwdcurlen=${#PWD_PROMPT}; # It string length.
-    local pwdoffset=$(( pwdcurlen - pwdmaxlen ));
-    if [ ${pwdoffset} -gt "0" ]
-    then
-        PWD_PROMPT=${PWD_PROMPT:$pwdoffset:$pwdmaxlen}; # Expansion to max from pos
-        PWD_PROMPT=${trunc_symbol}/${PWD_PROMPT#*/};    # Prepend truncation without duplicates
-    fi
-}
 
-__bash_prompt_status_command() {
-    local    EXIT="${?##0}";             # This needs to be first
-    local PIPEXIT=${PIPESTATUS[0]};      # Pipes exit
-    local RESET='\[\033[0m\]';
-    local   RED='\[\033[1;31m\]';
-    local GREEN='\[\033[1;32m\]';
-    if [[ $EXIT -eq 0 && $PIPEXIT -eq 0 ]]; then
-        EXITC_ICON="${GREEN}✅";
-    else
-        EXITC_ICON="${RED}$EXIT?❌";
-    fi
-    EXITC_ICON+=${RESET};
-}
-
-__bash_build_prompt() {
-    local NONE="\[\033[0m\]";    # unsets color to term's fg color
-    # regular colors
-    local K="\[\033[0;30m\]";    # black
-    local R="\[\033[0;31m\]";    # red
-    local G="\[\033[0;32m\]";    # green
-    local Y="\[\033[0;33m\]";    # yellow
-    local B="\[\033[0;34m\]";    # blue
-    local M="\[\033[0;35m\]";    # magenta
-    local C="\[\033[0;36m\]";    # cyan
-    local W="\[\033[0;37m\]";    # white
-    # emphasized (bolded) colors
-    local EMK="\[\033[1;30m\]";
-    local EMR="\[\033[1;31m\]";
-    local EMG="\[\033[1;32m\]";
-    local EMY="\[\033[1;33m\]";
-    local EMB="\[\033[1;34m\]";
-    local EMM="\[\033[1;35m\]";
-    local EMC="\[\033[1;36m\]";
-    local EMW="\[\033[1;37m\]";
-    # background colors
-    local BGK="\[\033[40m\]";
-    local BGR="\[\033[41m\]";
-    local BGG="\[\033[42m\]";
-    local BGY="\[\033[43m\]";
-    local BGB="\[\033[44m\]";
-    local BGM="\[\033[45m\]";
-    local BGC="\[\033[46m\]";
-    local BGW="\[\033[47m\]";
-
-    # If this is an xterm set the title to user@host:dir
-    case $TERM in
-        xterm*|rxvt*)
-#            local TITLEBAR='\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]';
-#            local TITLEBAR='\[\e]0;\u:${PWD_PROMPT:+($PWD_PROMPT)}\a\]';
-            local TITLEBAR='\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h:${PWD_PROMPT:+($PWD_PROMPT)}\a\]';
-            ;;
-        *)
-            local TITLEBAR="";
-            ;;
-    esac
-
-    local UC=$EMG;                  # user's color
-    [ $UID -eq "0" ] && UC=$EMR;    # root's color
-
-    # If git command found (silent detection)
-    if command -v git &>/dev/null; then
-        # if inside git repo (silent detection)
-        if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
-            local git_stat;
-            if [ "$color_prompt" = yes ]; then
-                git_stat=( $(git -c color.ui=always status -sb) );
-            else
-                git_stat=( $(git -c color.ui=never  status -sb) );
-            fi
-            # extract only "branch...remote" part/column
-            git_stat=" ${git_stat[1]}";
-            [ "$color_prompt" = yes ] && git_stat="${EMC}📦${NONE}${git_stat}";
-            [ "$color_prompt" != yes ] && git_stat="📦${git_stat}";
-            git_stat="\n ${git_stat}";
-        fi
-    fi
-
-    # Init with remote
-    PS1='${debian_chroot:+($debian_chroot)}';
-    # extra backslash in front of \$ to make bash colorize the prompt
-    if [ "$color_prompt" = yes ]; then
-#        PS1+='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ ';
-        PS1+="${EMY}[${UC}\u${EMK}@${UC}\h${EMY}:${EMB}\${PWD_PROMPT}${EMY}]${UC}\\$ ${NONE}";
-        PS1+="${git_stat}${NONE}";
-        PS1+="\n ${EXITC_ICON} ${EMY}👉${NONE} ";
-    else
-        PS1+="[\u@\h:\${PWD_PROMPT}]\\$ ${git_stat}\n ${EXITC_ICON} 👉 ";
-#        PS1+='\u@\h:\w\$ ';
-    fi
-
-    # prepend titlebar
-    PS1="$TITLEBAR$PS1";
-}
-
-PROMPT_COMMAND="__bash_prompt_status_command${PROMPT_COMMAND:+; $PROMPT_COMMAND}";
-PROMPT_COMMAND="__bash_prompt_command${PROMPT_COMMAND:+; $PROMPT_COMMAND}";
-PROMPT_COMMAND="__bash_build_prompt${PROMPT_COMMAND:+; $PROMPT_COMMAND}";
-#unset __bash_build_prompt;
-#unset color_prompt force_color_prompt;
+#PS1="[\u@\h \W$(__git_ps1 " (%s)")]\$ ";
+PS1=$(__bash_build_prompt "$color_prompt");
+unset color_prompt;
+unset force_color_prompt;
 
 
 # enable color support of ls and also add handy aliases
