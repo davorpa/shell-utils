@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Usefull script/snippet to force syncing your forked master
+# (local & remote origin) with their upstream sources.
+#
+# @author davorpatech
+# @since 2021-07-01
+#
+
+#git remote add upstream https://github.com/some_user/some_repo
+git fetch origin
+git fetch upstream
+git checkout master
+git reset --hard upstream/master
+git push origin master --force
