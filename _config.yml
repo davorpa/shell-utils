@@ -4,22 +4,32 @@
 
 # [site encoding]
 encoding: utf-8
+
 # [Name of visual theme]
-theme: jekyll-theme-hacker
+#theme: jekyll-theme-hacker
+remote_theme: pages-themes/hacker@v0.2.0
+
 # [The title of your site]
 title: My Shell Utils
+
 # [A short description of your site's purpose]
 description: Because scripts are the powerful tool for automating things 🧰😉
+
 # [author of posts]
 author: davorpa
+
 # ["true" or "false" to indicate whether to provide a download URL]
 show_downloads: false
+
 # [Your Google Analytics tracking ID]
 google_analytics: G-16B3VRNXK7
+
 # [Number of posts in one paginated section (default: 3)]
 paginate: 5
+
 # Declare rubygem used plugins
 plugins:
+  - jekyll-remote-theme
   - jemoji
   - jekyll-sitemap
   - jekyll-seo-tag
