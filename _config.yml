@@ -22,7 +22,7 @@ author: davorpa
 show_downloads: false
 
 # [Your Google Analytics tracking ID]
-google_analytics: G-16B3VRNXK7
+google_analytics: UA-203788397-2
 
 # [Number of posts in one paginated section (default: 3)]
 paginate: 5
