@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# ====================================
+#
+# This script acts as a proxy of `git commit` to select a repository profile before
+#
+# @AUTHOR: davorpa
+#
+# @SOURCE:
+#
+#   https://davorpa.github.io/shell-utils/scripts/git-proxy-commit
+#
+# @LICENSE:
+#
+#   This program is free software. It comes without any warranty, to
+#   the extent permitted by applicable law. You can redistribute it
+#   and/or modify it under the terms of the Do What The Fuck You Want
+#   To Public License, Version 2, as published by Davorpa TECH. See
+#   https://davorpa.github.io/shell-utils/scripts/COPYING
+#   for more details.
+#
+# @EXAMPLE:
+#
+#   $ git proxy-commit -m "Awesome proxied commit message"
+#
+
+# silent prompt
+input -sp 'GIT profile: ' profile
+# switch
+case $profile in
+  superman)
+    git config user.email "superman@example.com"
+    git config user.name "user_name" 
+    git config user.signingKey "user_gpg_public_key"
+    ;;
+  foo)
+    git config user.email "foo@example.com"
+    git config user.name "foo_user_name" 
+    git config user.signingKey "foo_user_gpg_public_key"
+    ;;
+  # ....
+  
+  # default case: raise error
+  *)
+    echo "ERR: Unknown profile: $profile" >&2
+    exit 1
+esac
+
+# execute with original args
+git commit $@
