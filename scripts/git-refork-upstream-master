@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Usefull script/snippet to force syncing your forked master
 # (local & remote origin) with their upstream sources.
