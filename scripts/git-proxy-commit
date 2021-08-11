@@ -42,7 +42,7 @@ case $profile in
   
   # default case: raise error
   *)
-    echo "ERR: Unknown profile: $profile" >&2
+    >&2 echo "ERR: Unknown profile: $profile"
     exit 1
 esac
 
