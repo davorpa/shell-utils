@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+#
+# https://www.shellscript.sh/echo.html
+#
+
+
+if [ "`echo -n`" = "-n" ]; then
+  n=""
+  c="\c"
+else
+  n="-n"
+  c=""
+fi
+
+echo $n $@ $c
