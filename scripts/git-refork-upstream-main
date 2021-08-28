@@ -3,6 +3,8 @@
 # Usefull script/snippet to force syncing your forked main
 # (local & remote origin) with their upstream sources.
 #
+# if there are some important changes in local/origin, make a stash first
+#
 # @author davorpatech
 # @since 2021-07-01
 #
