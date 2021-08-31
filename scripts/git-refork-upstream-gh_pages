@@ -12,6 +12,6 @@
 #git remote add upstream https://github.com/some_user/some_repo
 git fetch origin
 git fetch upstream
-git checkout main
-git reset --hard upstream/main
-git push origin main --force
+git checkout gh_pages
+git reset --hard upstream/gh_pages
+git push origin gh_pages --force
