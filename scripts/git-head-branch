@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# This script force syncing your forked repository
-# (local & remote origin) with their upstream sources.
+# This script prints the branch name where HEAD points to.
 #
-# WARN: If there are some important changes in local/origin,
-#       make a branch or stash first
+# Remote name must be provided as parameter.
 #
 # @author   davorpatech
 # @since    2021-09-01
