@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+# This script force syncing your forked repository
+# (local & remote origin) with their upstream sources.
+#
+# WARN: If there are some important changes in local/origin,
+#       make a branch or stash first
+#
+# @author   davorpatech
+# @since    2021-09-01
+# @version  2021-09-01
+#
+# @SOURCE:
+#
+#   https://davorpa.github.io/shell-utils/scripts/git-head-branch
+#
+# @LICENSE:
+#
+#   This program is free software. It comes without any warranty, to
+#   the extent permitted by applicable law. You can redistribute it
+#   and/or modify it under the terms of the Do What The Fuck You Want
+#   To Public License, Version 2, as published by Davorpa TECH. See
+#   https://davorpa.github.io/shell-utils/scripts/COPYING
+#   for more details.
+#
+#
+
+set -e
+
+if [[ $1 == -v ]]; then
+    verbose=1
+    shift
+fi
+
+REMOTE_NAME=$1
+
+main() {
+    enforce_usage
+
+    git remote show "$UPSTREAM_NAME" | awk '/HEAD branch/ {print $NF}'
+}
+
+enforce_usage() {
+    if [ -z "$REMOTE_NAME" ]; then
+        usage
+        exit 1
+    fi
+}
+
+usage() {
+    echo "usage: $(basename "$0") remote_name"
+}
+
+log_command() {
+    debug "=> $*"
+    eval "$@"
+}
+
+debug() {
+    if [ $verbose ]; then
+        echo "$*" >&2
+    fi
+}
+
+main
