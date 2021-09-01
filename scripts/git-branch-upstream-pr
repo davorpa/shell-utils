@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
 #
-# Usefull script/snippet to recover Github pull request's head 
+# Usefull script/snippet to recover Github pull request's head
 # and continue review/improvement in other branch
 # without the need of make a PR over the author forked repo
 #
-# @author davorpatech
-# @since 2021-08-28
+# @author  davorpatech
+# @since   2021-08-28
+# @version 2021-08-28
 #
 
 # prompt for data
