@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+
+# This script force syncing your forked repository
+# (local & remote origin) with their upstream sources.
+#
+# WARN: If there are some important changes in local/origin,
+#       make a branch or stash first
+#
+# @author   davorpatech
+# @since    2021-07-01
+# @version  2021-09-01
+#
+# @SOURCE:
+#
+#   https://davorpa.github.io/shell-utils/scripts/git-refork-upstream
+#
+# @LICENSE:
+#
+#   This program is free software. It comes without any warranty, to
+#   the extent permitted by applicable law. You can redistribute it
+#   and/or modify it under the terms of the Do What The Fuck You Want
+#   To Public License, Version 2, as published by Davorpa TECH. See
+#   https://davorpa.github.io/shell-utils/scripts/COPYING
+#   for more details.
+#
+
+set -e
+
+if [[ $1 == -v ]]; then
+    verbose=1
+    shift
+fi
+
+BRANCH=$1
+
+#git remote add upstream https://github.com/some_user/some_repo.git
+#git remote add upstream git@github.com:some_user/some_repo.git
+
+ORIGIN_NAME=origin
+# get the remote name dynamically
+UPSTREAM_NAME=$( git remote | grep -E -o '(upstream|origin)' | tail -1 )
+
+main() {
+    # TODO: stash / pop instead exit
+    abort_if_dirty_repo
+    enforce_upstream
+    refork
+}
+
+usage() {
+    echo "usage: $(basename "$0") [branch_name]"
+}
+
+abort_if_dirty_repo() {
+    set +e
+    git diff-index --quiet --cached HEAD
+    if [[ $? -ne 0 ]]; then
+        echo "warn: You have staged but not committed changes that would be lost! Aborting."
+        exit 1
+    fi
+    git diff-files --quiet
+    if [[ $? -ne 0 ]]; then
+        echo "warn: You have unstaged changes that would be lost! Aborting."
+        exit 1
+    fi
+    untracked=$(git ls-files --exclude-standard --others)
+    if [ -n "$untracked" ]; then
+        echo "warn: You have untracked files that could be overwritten! Aborting."
+        exit 1
+    fi
+    set -e
+}
+
+enforce_upstream() {
+    if [ -z "$UPSTREAM_NAME" ]; then
+        echo -e "fatal: '$UPSTREAM_NAME' does not appear to be a git repository
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists." >&2
+        exit 127
+    fi
+
+    git ls-remote --exit-code "$UPSTREAM_NAME" >/dev/null || exit $?
+
+    if [ "$UPSTREAM_NAME" == "$ORIGIN_NAME" ] || \
+        [ "$(git remote get-url "$UPSTREAM_NAME")" == "$(git remote get-url "$ORIGIN_NAME")" ]; then
+        echo -e "error: It seems that upstream matches with remote origin. Are you sure this is a forked repo?
+
+    $UPSTREAM_NAME\t$(git remote get-url "$UPSTREAM_NAME")" >&2
+        exit 2
+    fi
+}
+
+refork() {
+    # Use first parameter as branch and fallback to head
+    if [ -z "$BRANCH" ]; then
+        # get the branch name where HEAD points to
+        BRANCH=$( git remote show "$UPSTREAM_NAME" | awk '/HEAD branch/ {print $NF}' )
+        echo -e "warn: No branch name was provided as parameter. Using which '$UPSTREAM_NAME' HEAD points to: $BRANCH"
+    fi
+
+    echo -e "Reforking '$UPSTREAM_NAME/$BRANCH' from: $(git remote get-url "$UPSTREAM_NAME")"
+
+    # fetch both remotes
+    git fetch "$ORIGIN_NAME" || exit $?
+    git fetch "$UPSTREAM_NAME" || exit $?
+    # download content
+    git checkout "$BRANCH" || exit $?
+    # replace working content
+    git reset --hard "$UPSTREAM_NAME/$BRANCH" || exit $?
+    # push to own remote
+    git push "$ORIGIN_NAME" "$BRANCH" --force
+
+    echo -e "Branch '$ORIGIN_NAME/$BRANCH' was reforked successfully from '$UPSTREAM_NAME/$BRANCH'."
+}
+
+log_command() {
+    debug "=> $*"
+    eval "$@"
+}
+
+debug() {
+    if [ $verbose ]; then
+        echo "$*" >&2
+    fi
+}
+
+main
