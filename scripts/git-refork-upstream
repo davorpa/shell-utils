@@ -38,7 +38,7 @@ BRANCH=$1
 
 ORIGIN_NAME=origin
 # get the remote name dynamically
-UPSTREAM_NAME=$( git remote | grep -E -o '(upstream|origin)' | tail -1 )
+UPSTREAM_NAME=$(git remote | grep -E -o '(upstream|origin)' | tail -1)
 
 main() {
     # TODO: stash / pop instead exit
@@ -96,7 +96,7 @@ refork() {
     # Use first parameter as branch and fallback to head
     if [ -z "$BRANCH" ]; then
         # get the branch name where HEAD points to
-        BRANCH=$( git remote show "$UPSTREAM_NAME" | awk '/HEAD branch/ {print $NF}' )
+        BRANCH=$(git remote show "$UPSTREAM_NAME" | awk '/HEAD branch/ {print $NF}')
         echo -e "warn: No branch name was provided as parameter. Using which '$UPSTREAM_NAME' HEAD points to: $BRANCH"
     fi
 
