@@ -4,7 +4,7 @@
 #
 # @author   davorpatech
 # @since    2020-12-01
-# @version  2020-12-01
+# @version  2021-08-30
 #
 # @SOURCE:
 #
@@ -20,4 +20,26 @@
 #   for more details.
 #
 
-sed -e 's/^[[:space:]]*//g'
+regex='s/^[[:space:]]*//g'
+#check if args are suplied
+if [ $# -eq 0 ]; then
+    # as standard input pipe filter
+    sed -e "$regex"
+else
+    # as single argument command
+
+    opts="-n"  # no new line by default to support concat
+    if [[ $1 == -e ]]; then # consume optional escape argument
+        opts="${opts}e"
+        shift
+    fi
+
+    # check if text argument is missing
+    if [[ $# -ne 1 ]]; then
+        cmdn=$(basename "$0")
+        echo >&2 -e "usage: \e[32m$cmdn [-e] text\e[0m Pipe alternative: \e[32msome_command | $cmdn\e[0m."
+        exit 4
+    fi
+
+    echo $opts "$1" | sed -e "$regex"
+fi
