@@ -53,11 +53,13 @@ usage() {
 
 abort_if_dirty_repo() {
     set +e
-    if git diff-index --quiet --cached HEAD; then
+    git diff-index --quiet --cached HEAD
+    if [[ $? -ne 0 ]]; then
         echo "warn: You have staged but not committed changes that would be lost! Aborting."
         exit 1
     fi
-    if git diff-files --quiet; then
+    git diff-files --quiet
+    if [[ $? -ne 0 ]]; then
         echo "warn: You have unstaged changes that would be lost! Aborting."
         exit 1
     fi
@@ -71,7 +73,7 @@ abort_if_dirty_repo() {
 
 enforce_upstream() {
     if [ -z "$UPSTREAM_NAME" ]; then
-        echo -e "fatal: '$UPSTREAM_NAME' does not appear to be a git repository
+        echo -e "fatal: '\e[32m$UPSTREAM_NAME\e[0m' does not appear to be a git repository
 fatal: Could not read from remote repository.
 
 Please make sure you have the correct access rights
@@ -81,12 +83,16 @@ and the repository exists." >&2
 
     git ls-remote --exit-code "$UPSTREAM_NAME" >/dev/null || exit $?
 
-    if [ "$UPSTREAM_NAME" == "$ORIGIN_NAME" ] || \
-        [ "$(git remote get-url "$UPSTREAM_NAME")" == "$(git remote get-url "$ORIGIN_NAME")" ]; then
-        echo -e "error: It seems that upstream matches with remote origin. Are you sure this is a forked repo?
+    if [ "$UPSTREAM_NAME" == "$ORIGIN_NAME" ]; then
+        local remote_url;
+        remote_url=$(git remote get-url "$UPSTREAM_NAME")
+        echo "$remote_url"
+        if [ "$remote_url" == "$(git remote get-url "$ORIGIN_NAME")" ]; then
+            echo -e "error: It seems that upstream matches with remote origin. Are you sure this is a forked repo?
 
-    $UPSTREAM_NAME\t$(git remote get-url "$UPSTREAM_NAME")" >&2
-        exit 2
+    \e[32m$UPSTREAM_NAME\e[0m\t\e[33m$remote_url\e[0m" >&2
+            exit 2
+        fi
     fi
 }
 
@@ -95,10 +101,10 @@ refork() {
     if [ -z "$BRANCH" ]; then
         # get the branch name where HEAD points to
         BRANCH=$(git remote show "$UPSTREAM_NAME" | awk '/HEAD branch/ {print $NF}')
-        echo -e "warn: No branch name was provided as parameter. Using which '$UPSTREAM_NAME' HEAD points to: $BRANCH"
+        echo -e "warn: No branch name was provided as parameter. Using which '\e[32m$UPSTREAM_NAME\e[0m' HEAD points to: \e[32m$BRANCH\e[0m"
     fi
 
-    echo -e "Reforking '$UPSTREAM_NAME/$BRANCH' from: $(git remote get-url "$UPSTREAM_NAME")"
+    echo -e "Reforking '\e[32m$UPSTREAM_NAME/$BRANCH\e[0m' from: \e[33m$(git remote get-url "$UPSTREAM_NAME")\e[0m"
 
     # fetch both remotes
     git fetch "$ORIGIN_NAME" || exit $?
@@ -110,7 +116,7 @@ refork() {
     # push to own remote
     git push "$ORIGIN_NAME" "$BRANCH" --force
 
-    echo -e "Branch '$ORIGIN_NAME/$BRANCH' was reforked successfully from '$UPSTREAM_NAME/$BRANCH'."
+    echo -e "Branch '\e[32m$ORIGIN_NAME/$BRANCH\e[0m' was reforked successfully from '\e[32m$UPSTREAM_NAME/$BRANCH\e[0m'."
 }
 
 log_command() {
