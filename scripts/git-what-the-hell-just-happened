@@ -18,4 +18,3 @@ log $new
 echo
 echo "Changes:"
 git diff --stat --summary $new $old
-

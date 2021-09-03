@@ -30,16 +30,16 @@ input -sp 'GIT profile: ' profile
 case $profile in
   superman)
     git config user.email "superman@example.com"
-    git config user.name "user_name" 
+    git config user.name "user_name"
     git config user.signingKey "user_gpg_public_key"
     ;;
   foo)
     git config user.email "foo@example.com"
-    git config user.name "foo_user_name" 
+    git config user.name "foo_user_name"
     git config user.signingKey "foo_user_gpg_public_key"
     ;;
   # ....
-  
+
   # default case: raise error
   *)
     >&2 echo "ERR: Unknown profile: $profile"
