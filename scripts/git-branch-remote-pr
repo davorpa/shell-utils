@@ -1,0 +1,317 @@
+#!/usr/bin/env bash
+
+#
+# This script allows recover any Github pull request's HEAD.
+# Created branch is not attached to any remote, refs are used.
+#
+# It's useful to continue review/improvement other authored branches,
+# stale/deleted or not, without the needs of make a PR over
+# their forked repo.
+#
+# @author  davorpatech
+# @since   2021-08-28
+# @version 2021-09-02
+#
+# @COMMAND: git branch-remote-pr <owner/repo> <#number>
+#
+# @SOURCE:
+#
+#   https://davorpa.github.io/shell-utils/scripts/git-branch-remote-pr
+#
+# @LICENSE:
+#
+#   This program is free software. It comes without any warranty, to
+#   the extent permitted by applicable law. You can redistribute it
+#   and/or modify it under the terms of the Do What The Fuck You Want
+#   To Public License, Version 2, as published by DavorpaTECH. See
+#   https://davorpa.github.io/shell-utils/scripts/COPYING
+#   for more details.
+#
+
+set -e
+
+if [[ $1 == -v ]]; then
+    verbose=1
+    shift
+fi
+
+GITHUB_API_URL=${GITHUB_API_URL:-https://api.github.com}
+# TODO: Resolve PR_REPOSITORY from REMOTE_REF and Git attributes of working folder where script is executed
+PR_REMOTE_REFNAME=${PR_REMOTE_REFNAME:-upstream}
+PR_REPOSITORY=$1
+# TODO: Strip leading # if present in PR_NUMBER
+PR_NUMBER=$2
+# TODO: Strip leading @ if present in PR_AUTHOR
+PR_AUTHOR=$3
+PR_TITLE=
+
+main() {
+    read_repository
+    read_pr_number
+    fetch_pr_info
+    echo -e "At \e[32m$PR_REPOSITORY\e[0m PR#\e[38;5;45m$PR_NUMBER\e[0m by \e[32m@$PR_AUTHOR\e[0m: $PR_TITLE"
+    checkout_pr_branch
+}
+
+
+checkout_pr_branch() {
+    set +e
+    # Compose branch name
+    local BRANCH="pr/$PR_AUTHOR/$PR_NUMBER"
+    [[ -n "$PR_TITLE" ]] && BRANCH="$BRANCH-$(format_git_refspec "$PR_TITLE")"
+
+    # create branch with contents
+    echo -e "Branch PR \e[33m$PR_REPOSITORY#$PR_NUMBER\e[0m as: \e[38;5;45m$BRANCH\e[0m"
+    git fetch "$PR_REMOTE_REFNAME" "pull/$PR_NUMBER/head:$BRANCH"
+    [[ $? -ne 0 ]] && exit 1
+
+    # checkout interactive prompt
+    if [ -t 0 ]; then
+        local answer;
+        echo -ne "Checkout PR branch '\e[38;5;45m$BRANCH\e[0m'? (y/n): "
+        read -re answer
+        case ${answer:0:1} in
+            y|Y|s|S )
+                git checkout "$BRANCH"
+                ;;
+            * ) ;;
+        esac
+    fi
+
+    set -e
+}
+
+read_repository() {
+    set +e
+
+    local value=$PR_REPOSITORY
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then
+        if [ -t 0 ]; then    # interactive prompt for missing parametrized data
+            echo -ne "Provide GitHub repository (\e[32mowner/repo\e[0m) and press [ENTER]: "
+            read -re value
+        fi
+    fi
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then #validate
+        enforce_usage
+    fi
+    PR_REPOSITORY=$value
+
+    set -e
+}
+
+read_pr_number() {
+    set +e
+
+    local value=$PR_NUMBER
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then
+        if [ -t 0 ]; then    # interactive prompt for missing parametrized data
+            echo -ne "Input the Pull Request \e[32m#number\e[0m and press [ENTER]: "
+            read -re value
+        fi
+    fi
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then #validate
+        enforce_usage
+    fi
+    PR_NUMBER=$value
+
+    set -e
+}
+
+read_pr_author() {
+    set +e
+
+    local value=$1
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then
+        value=$(echo "$PR_AUTHOR" | trim)
+    fi
+    if [ -z "$value" ] && [ -t 0 ]; then
+        # interactive prompt for missing data
+        echo -ne "Input the \e[32m@author\e[0m who makes the Pull Request and press [ENTER]: "
+        read -re value
+    fi
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then #validate
+        enforce_usage 1
+    fi
+    PR_AUTHOR=$value
+
+    set -e
+}
+
+read_pr_title() {
+    set +e
+
+    local value=$1
+    value=$(echo "$value" | trim)
+    if [ -z "$value" ]; then
+        # check for interactive TTY before prompt for data
+        if [ -t 0 ]; then
+            echo -ne "Input an optional Pull Request \e[32m#title\e[0m and press [ENTER]: "
+            read -re value
+        fi
+    fi
+    PR_TITLE=$(echo "$value" | trim)
+
+    set -e
+}
+
+fetch_pr_info() {
+    set +e
+    local json;
+    json=$(request_json "/repos/$PR_REPOSITORY/pulls/$PR_NUMBER")
+    [[ $? -ne 0 ]] && exit 1
+    read_pr_author "$(json_raw_literal "$json" "user.login")"
+    read_pr_title "$(json_raw_literal "$json" "title")"
+    set -e
+}
+
+request_json() {
+    local url="$GITHUB_API_URL$1"
+    local http_content;
+    local http_code=0
+    local exit_code=0
+    local exit_errmsg;
+    local response;
+    local metadata;
+
+# write response to temp file payload + status_code
+#    curl --silent --write-out "%{http_code}" \
+#        --header "Accept: application/vnd.github.v3+json" "$url" | \
+#        tee test.txt | \        # split output to file and stdout
+#        sed -e 's-.*\}--' | \   # remove everything before last '}'
+#        grep 200  && \          # try to find string 200, only in success next step is done
+#        echo && \               # a new-line to juice-up the output
+#        cat test.txt | \        #
+#        sed 's-}.*$-}-' | \     # removes the last line with status
+#        jq                      # format json
+
+    response=$(curl --silent --write-out \
+                "::--RESPONSE--::\n  exit_code=%{exitcode};\n  exit_errmsg=%{errormsg};\n  http_code=%{http_code};\n  " \
+                --header "Accept: application/vnd.github.v3+json" \
+                "$url")
+    exit_code=$?
+
+    # Extract parts
+    metadata=${response##*::--RESPONSE--::$'\n'}       # substring after last token ocurrence
+    http_content=${response%::--RESPONSE--::$'\n'*}    # substring before last token ocurrence
+    exit_errmsg=$(extract_meta "$metadata" "exit_errmsg")
+    http_code=$(extract_meta "$metadata" "http_code")
+
+    # Validate
+    if [ "$exit_code" -ne 0 ];  then # client / network error
+        echo -e "error: Something was wrong sending request:
+
+        URL:        \e[33m$url\e[0m
+        Exit code:  \e[38;5;9m$exit_code\e[0m
+        Message:    \e[38;5;45m$exit_errmsg\e[0m
+
+    See documentation at: \e[33mhttps://curl.se/libcurl/c/libcurl-errors.html\e[0m" >&2
+    fi
+    if [ "$exit_code" -eq 0 ] && [ "$http_code" -ne 200 ]; then # response error
+        exit_code=204   # 204 Response completed but errored
+        # extract github
+        local message;
+        local documentation_url;
+        message=$(json_raw_literal "$http_content" "message")
+        documentation_url=$(json_raw_literal "$http_content" "documentation_url")
+        echo -e "error: Something was wrong processing request:
+
+        URL:     \e[33m$url\e[0m
+        Status:  \e[38;5;9m$http_code\e[0m
+        Message: \e[38;5;45m$message\e[0m
+
+    See documentation at: \e[33m$documentation_url\e[0m" >&2
+    fi
+    [ "$exit_code" -ne 0 ] && return $exit_code     # abort in both cases
+
+    # ensure valid json on return
+    local json;
+    json=$(echo "$http_content" | jq)    # format json
+    exit_code=$?
+    [ "$exit_code" -ne 0 ] && {
+        echo -e "
+        URL:        \e[33m$url\e[0m
+        Exit code:  \e[38;5;9m$exit_code\e[0m
+
+    See documentation at: \e[33mhttps://stedolan.github.io/jq/manual/#Invokingjq\e[0m" >&2
+        exit_code=205   # mask with 205 Invalid response content
+    };
+    [ "$exit_code" -eq 0 ] && echo -n "$json"
+    return $exit_code
+}
+
+extract_meta() {
+    local value=$1  # all metas, one per line
+    local prop=$2   # meta token to search
+    value=${value#*$prop=};     # substring after first token ocurrence
+    value=${value%%;$'\n'*}     # substring before first token ocurrence
+    echo -n "$value"
+}
+
+validate_response() {
+    local content=$1
+    local message;
+    local documentation_url;
+    message=$(json_raw_literal "$content" "message")
+    documentation_url=$(json_raw_literal "$content" "documentation_url")
+    if [ -n "$message" ] && [ -n "$documentation_url" ]; then
+        echo -e "error: Fetching API
+
+        URL:     $url
+        Message: $message
+
+    See documentation at: $documentation_url" >&2
+        exit 212
+    fi
+}
+
+json_raw_literal() {
+    local content=$1
+    local prop=$2
+    jq --arg key "root" -r ".$prop // empty" <<< "$content"
+    return $?
+}
+
+enforce_usage() {
+    usage $*
+    exit 1
+}
+
+usage() {
+    local append_author=$1
+    local cmd;
+    cmd="$(basename "$0")"
+    local lineargs="\e[32mowner/repo\e[0m \e[33mpr_number\e[0m";
+    local hint="\e[32moctocat/hello-world\e[0m \e[33m42\e[0m";
+    [[ $append_author ]] && { lineargs="$lineargs \e[38;5;9mpr_author\e[0m"; hint="$hint github-actions"; }
+    echo -e "usage: $cmd $lineargs
+
+    An example:
+
+    $cmd \e[32m$hint\e[0m"
+}
+
+log_command() {
+    debug "=> $*"
+    eval "$@"
+}
+
+debug() {
+    if [ $verbose ]; then
+        echo $* >&2
+    fi
+}
+
+format_git_refspec() {
+    #enable regex variable expansion
+    shopt -s extglob
+    # hyphenate not compatible characters with git refspec
+    echo -ne "${1//+([ \!\¡\¿\?\@\#\$\%\&\~\¬\^\=\*\+\-\"\'\`\´\(\)\[\]\{\}\<\>\.\,\:\;\|\\\/])/-}" | xargs printf %s
+}
+
+main
