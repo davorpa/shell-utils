@@ -13,4 +13,5 @@ else
   c=""
 fi
 
+# shellcheck disable=SC2086
 echo $n $@ $c
