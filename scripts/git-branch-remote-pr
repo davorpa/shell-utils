@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#---
 #
 # This script allows recover any Github pull request's HEAD.
 # Created branch is not attached to any remote, refs are used.
@@ -27,6 +28,7 @@
 #   https://davorpa.github.io/shell-utils/scripts/COPYING
 #   for more details.
 #
+#---
 
 set -e
 

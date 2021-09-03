@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# ====================================
+#---
 #
 # This shell script written in bash allows you to check for updates of Zoom meetings client
 #
@@ -25,7 +25,7 @@
 # - https://support.zoom.us/hc/en-us/articles/205759689
 # - https://support.zoom.us/hc/en-us/articles/201361963
 #
-# ====================================
+#---
 
 
 # ====================================

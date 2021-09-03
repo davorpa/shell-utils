@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#---
+#
 # This script acts as a standard input pipe filter to trim it spaces from the right
 #
 # @author   davorpatech
@@ -19,6 +21,7 @@
 #   https://davorpa.github.io/shell-utils/scripts/COPYING
 #   for more details.
 #
+#---
 
 regex='s/[[:space:]]*$//g'
 #check if args are suplied

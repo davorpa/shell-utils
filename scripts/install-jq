@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+#---
 #
 # This script installs jq to be used eg in Git Bash for Windows
 #
@@ -23,6 +24,7 @@
 #   https://davorpa.github.io/shell-utils/scripts/COPYING
 #   for more details.
 #
+#---
 
 ARCH=$(getconf LONG_BIT)
 

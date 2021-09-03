@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#---
+#
 # This script force syncing your forked repository
 # (local & remote origin) with their upstream sources.
 #
@@ -23,6 +25,7 @@
 #   https://davorpa.github.io/shell-utils/scripts/COPYING
 #   for more details.
 #
+#---
 
 set -e
 

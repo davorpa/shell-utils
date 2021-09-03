@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#---
+#
 # This script shows you the name of upstream remote.
 # If git repo is a fork, it returns `upstream`, if not `origin`
 #
@@ -20,5 +22,6 @@
 #   https://davorpa.github.io/shell-utils/scripts/COPYING
 #   for more details.
 #
+#---
 
 git remote | grep -E -o '(upstream|origin)' | tail -1

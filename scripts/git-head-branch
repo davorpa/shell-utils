@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#---
+#
 # This script prints the branch name where HEAD points to.
 #
 # Remote name must be provided as parameter.
@@ -21,7 +23,7 @@
 #   https://davorpa.github.io/shell-utils/scripts/COPYING
 #   for more details.
 #
-#
+#---
 
 set -e
 
