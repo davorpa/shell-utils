@@ -27,7 +27,7 @@ set +e
 
 main() {
     warn_colored_terminal
-    print_colored_matrix
+    [ $# -eq 0 ] && print_colored_matrix
     print_usage_examples
 }
 
