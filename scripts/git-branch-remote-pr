@@ -255,23 +255,6 @@ extract_meta() {
     echo -n "$value"
 }
 
-validate_response() {
-    local content=$1
-    local message;
-    local documentation_url;
-    message=$(json_raw_literal "$content" "message")
-    documentation_url=$(json_raw_literal "$content" "documentation_url")
-    if [ -n "$message" ] && [ -n "$documentation_url" ]; then
-        echo -e "error: Fetching API
-
-        URL:     $url
-        Message: $message
-
-    See documentation at: $documentation_url" >&2
-        exit 212
-    fi
-}
-
 json_raw_literal() {
     local content=$1
     local prop=$2
