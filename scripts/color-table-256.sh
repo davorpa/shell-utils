@@ -79,4 +79,5 @@ print_usage_examples() {
     println
 }
 
-main
+# shellcheck disable=SC2068
+main $@
