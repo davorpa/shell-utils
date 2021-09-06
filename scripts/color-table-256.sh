@@ -23,16 +23,18 @@
 #   for more details.
 #
 
-set +e
+set -e
 
 main() {
+    usage
     warn_colored_terminal
-    [ $# -eq 0 ] && print_colored_matrix
-    print_usage_examples
+    [ $# -eq 0 ] && { print_colored_matrix; }
+    # shellcheck disable=SC2068
+    print_usage_examples $@
 }
 
-println() {
-    printf "\n"
+usage() {
+    printf "\nusage: %s [foreground_color] [background_color]\n" "$(basename "$0")";
 }
 
 warn_colored_terminal() {
@@ -61,22 +63,59 @@ print_colored_matrix() {
 }
 
 print_usage_examples() {
+    local __fgcolor=${1:-82}     # default: 82
+    local __bgcolor=${2:-33}     # default: 33
+
+    ! warn_color_range "$__fgcolor" "foreground" && __fgcolor=82  # if invalid, recover default
+    ! warn_color_range "$__bgcolor" "background" && __bgcolor=33
+
     println
-    printf " -> USAGE FOREGROUND: \e[38;5;42mecho -e \"\e[38;5;202m"
-        printf "\\\e[38;5;"; printf "\e[0m\e[38;5;82m82"; printf "\e[0m\e[38;5;202mm"
-            printf "\e[38;5;205m"; printf "\e[38;5;202m"
-            printf "\e[0m\e[38;5;82m YOUR TEXT COLORED IN 82 \e[0m\e[38;5;202m"
-        printf "\\\e[0m"
-    printf "\e[38;5;42m\"\e[0m"
+    printf " -> FOREGROUND SNIPPET: \e[38;5;42mecho -e \"\e[0m";
+        __highlighted_template 38 "$__fgcolor"
+        printf "\e[38;5;42m\"\e[0m"
+    println
+    printf "                        \e[38;5;42m printf \"\e[0m"
+        __highlighted_template 38 "$__fgcolor"
+        printf "\e[38;5;42m\\\n\"\e[0m"
     println
     println
-    printf " -> USAGE BACKGROUND: \e[38;5;42mecho -e \"\e[38;5;202m"
-        printf "\\\e[48;5;"; printf "\e[0m\e[48;5;33m33"; printf "\e[0m\e[38;5;202mm"
-            printf "\e[38;5;205m"; printf "\e[38;5;202m"
-            printf "\e[0m\e[48;5;33m YOUR TEXT COLORED IN 33 \e[0m\e[38;5;202m"
-        printf "\\\e[0m"
-    printf "\e[38;5;42m\"\e[0m"
+    printf " -> BACKGROUND SNIPPET: \e[38;5;42mecho -e \"\e[0m"
+        __highlighted_template 48 "$__bgcolor"
+        printf "\e[38;5;42m\"\e[0m"
     println
+    printf "                        \e[38;5;42m printf \"\e[0m"
+        __highlighted_template 48 "$__bgcolor"
+        printf "\e[38;5;42m\\\n\"\e[0m"
+    println
+}
+
+__highlighted_template() {
+    local fgbg=$1
+    local color=$2
+    printf "\e[38;5;202m\\\e[%s;5;" "$fgbg";
+        printf "\e[0m\e[%s;5;%sm%s" "$fgbg" "$color" "$color"
+        printf "\e[0m\e[38;5;202mm\e[38;5;105m\e[38;5;202m"
+        printf "\e[0m\e[%s;5;%sm YOUR TEXT COLORED IN %s \e[0m\e[38;5;202m" "$fgbg" "$color" "$color"
+    printf "\\\e[0m"
+}
+
+warn_color_range() {
+    local __varcolor=$1
+    local __varlabel=$2
+    local __varret=0
+    if [ -z "${__varcolor##*[!0-9]*}" ]; then
+        __varret=1
+    elif  [ "$__varcolor" -lt 0 ]; then
+        __varret=11
+    elif  [ "$__varcolor" -gt 255 ]; then
+        __varret=12
+    fi
+    [ $__varret -ne 0 ] && printf >&2 "\e[31mWARN:\e[0m %s color code is invalid (0..255): %s\n" "$__varlabel" "$__varcolor"
+    return $__varret
+}
+
+println() {
+    printf "\n"
 }
 
 # shellcheck disable=SC2068
