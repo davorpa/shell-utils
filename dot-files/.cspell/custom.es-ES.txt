@@ -1,0 +1,9 @@
+# #################################
+#   Custom (🇪🇸 es-ES) Dicionary Words
+# #################################
+edítalo
+exponenciación
+inicializa
+inicialización
+inicializar
+instálatelo

@@ -1,0 +1,5 @@
+# #################################
+#   Custom (🇺🇸 en) Dicionary Words
+# #################################
+compositionality
+feerless

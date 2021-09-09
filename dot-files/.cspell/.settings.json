@@ -1,0 +1,76 @@
+{
+
+    // The Language local to use when spell checking. "en", "en-US" and "en-GB" are currently supported by default.
+    "cSpell.language": "en,es,es-ES,en-US",
+    // Controls the maximum number of spelling errors per document.
+    "cSpell.maxNumberOfProblems": 100,
+    // Controls the number of suggestions shown.
+    "cSpell.numSuggestions": 8,
+    // The minimum length of a word before checking it against a dictionary.
+    "cSpell.minWordLength": 4,
+    // Enable / Disable the spell checker.
+    "cSpell.enabled": true,
+    // Enable / Disable compound words like 'errormessage'. Default: false
+    "cSpell.allowCompoundWords": true,
+    // Display the spell checker status on the status bar.
+    "cSpell.showStatus": true,
+    // Specify paths/files to ignore.
+    "cSpell.ignorePaths": [
+        "node_modules", // this will ignore anything the node_modules directory
+        "**/node_modules", // the same for this one
+        "**/node_modules/**", // the same for this one
+        "node_modules/**", // Doesn't currently work due to how the current working directory is determined.
+        "vscode-extension", //
+        ".git", // Ignore the .git directory
+        ".svn", // Ignore the .svn directory
+        "*.bck", // Ignore all .bck files.
+        "*.dll", // Ignore all .dll files.
+        "**/*.dll" // Ignore all .dll files
+    ],
+    // A List of Custom Dictionary Definitions.
+    "cSpell.customDictionaries": {
+        "custom.es-ES": {
+            "name": "Custom (🇪🇸 es-ES)",
+            "path": "~/.cspell/custom.es-ES.txt",
+            "addWords": true,
+            "scope": "user"
+        },
+        "custom.en": {
+            "name": "Custom (🇺🇸 en)",
+            "path": "~/.cspell/custom.en.txt",
+            "addWords": true,
+            "scope": "user"
+        },
+        "people-naming": {
+            "name": "People Naming: Names and Surnames",
+            "path": "~/.cspell/people-naming.txt",
+            "addWords": true,
+            "scope": "user"
+        },
+        "programming-terms": {
+            "name": "Programming Terms: Languages and related",
+            "path": "~/.cspell/programming-terms.txt",
+            "addWords": true,
+            "scope": "user"
+        },
+        "technical-terms.en": {
+            "name": "Technical Terms (🇺🇸 en)",
+            "path": "~/.cspell/technical-terms.en.txt",
+            "addWords": true,
+            "scope": "user"
+        },
+        "technical-terms.es": {
+            "name": "Technical Terms (🇪🇸 es-ES)",
+            "path": "~/.cspell/technical-terms.es.txt",
+            "addWords": true,
+            "scope": "user"
+        },
+        "websites": {
+            "name": "websites",
+            "path": "~/.cspell/websites.txt",
+            "addWords": true,
+            "scope": "user"
+        }
+    }
+
+}

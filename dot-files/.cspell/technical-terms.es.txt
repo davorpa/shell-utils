@@ -1,0 +1,8 @@
+# #################################
+#   Technical Terms (🇪🇸 es-ES) Dicionary Words
+# #################################
+postprocesado
+post-procesado
+tipado
+tupla
+
