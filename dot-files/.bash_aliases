@@ -171,7 +171,7 @@ alias grb-m='git commit --amend "-S"';  # Rename rebase message
 #
 
 # https://docs.npmjs.com/cli/v6/commands/npm-install
-alias npmi='npm install';                       # Install package dependencies
+alias npmi='npm install --no-fund';             # Install package dependencies
 alias npmi-opro='npmi --only=production';       # only non-devDependencies
 alias npmi-odev='npmi --only=development';      # only devDependencies
 alias npmig='npmi -G';                          # install the package globally rather than locally.
