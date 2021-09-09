@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+#---
+#
+# This script prints info about any commit SHA ref.
+#
+#    $ git log-commit-summary <ref>
+#
+#    $ git log-commit-summary HEAD^^^^   # 4th commit ago against predecesor
+#    $ git log-commit-summary 0702a8b    # commit with SHA 0702a8b against predecesor
+#
+# @author   davorpatech
+# @since    2021-09-09
+# @version  2021-09-09
+#
+# @SOURCE:
+#
+#   https://davorpa.github.io/shell-utils/scripts/git-log-commit-summary
+#
+# @LICENSE:
+#
+#   This program is free software. It comes without any warranty, to
+#   the extent permitted by applicable law. You can redistribute it
+#   and/or modify it under the terms of the Do What The Fuck You Want
+#   To Public License, Version 2, as published by Davorpa TECH. See
+#   https://davorpa.github.io/shell-utils/scripts/COPYING
+#   for more details.
+#
+#---
+
+set -e    # enable early exit on any sentence/execution errors
+
+if [[ $1 == -v ]]; then
+    verbose=1
+    shift
+fi
+
+main() {
+    enforce_usage "$1"
+    __git_log_commit_summary "$1"
+}
+
+__git_log_commit_summary() {
+    local ref=$1
+    local cmd=( git log --stat --abbrev-commit "$ref"^.."$ref" )
+    local ecode=0
+    # execute disabling failure early exit
+    set +e
+    log_command "${cmd[@]}" && ecode=$? || ecode=$?
+    set -e
+    # TODO: Capture stderr output only when verbose is enabled. Mask errors attending to wellknown codes and use stderr output as fallback using empty `case *)` block
+    case $ecode in
+        0) ;; # SUCCESS. stdout already printed due to we don't use command substitution
+        127) printf "\e[31mfatal:\e[0m command not found: '%s'\n" "${cmd[*]:0:4}" >&2 ;;
+        128) printf "\e[31mfatal:\e[0m argument '%s': unknown SHA|ref revision or not in working tree\n" "$ref" >&2 ;;
+        *) ;;
+    esac
+    return $ecode
+}
+
+enforce_usage() {
+    if [ -z "$1" ]; then
+        usage
+        exit 1
+    fi
+}
+
+usage() {
+    printf "\e[34musage:\e[0m %s <commit_ref|sha>\n" "$(basename "$0")"
+}
+
+log_command() {
+    debug "\e[35m==>>\e[0m $*"
+    eval "$@"
+}
+
+debug() {
+    if [ $verbose ]; then
+        echo -e "$*" >&2
+    fi
+}
+
+# shellcheck disable=SC2068
+main $@
