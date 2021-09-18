@@ -3,7 +3,10 @@
     name = davorpa
 [credential]
     helper = /usr/share/doc/git/contrib/credential/libsecret/git-credential-libsecret
+[init]
+    defaultBranch = main
 [commit]
+    sign = true
     gpgsign = true
 [color]
     ui = auto
