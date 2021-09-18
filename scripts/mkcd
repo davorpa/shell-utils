@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+#---
+#
+# Make a directory and cd into it.
+#
+# $1 - The folder path to create.
+#
+# @author   davorpatech
+# @since    2021-09-18
+# @version  2021-09-18
+# @credits  http://mmb.pcb.ub.es/~carlesfe/unix/tricks.txt
+#
+# @SOURCE:
+#
+#   https://davorpa.github.io/shell-utils/scripts/mkcd
+#
+# @LICENSE:
+#
+#   This program is free software. It comes without any warranty, to
+#   the extent permitted by applicable law. You can redistribute it
+#   and/or modify it under the terms of the Do What The Fuck You Want
+#   To Public License, Version 2, as published by DavorpaTECH. See
+#   https://davorpa.github.io/shell-utils/scripts/COPYING
+#   for more details.
+#
+#---
+
+mkdir "$1" && cd "$1"
